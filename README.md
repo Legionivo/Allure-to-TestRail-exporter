@@ -11,7 +11,7 @@ Gradle 5(optional, wrapper is included in project)
    * Do code changes 
    * Change plugin version in build.gradle
    * Run `buildPlugin` gradle task
-   * Install new plugin from `build/distributions/TestRailExporter-x.x.zip`
+   * Install new plugin from `build/distributions/AllureToTestRailExporter-x.x.zip`
    * Have fun
 
 **Plugin does update existing test case in TestRail - no need to delete it manually and export again!**  
