@@ -1,0 +1,50 @@
+<idea-plugin>
+    <id>test-rail-plugin</id>
+    <name>Allure to Test Rail exporter</name>
+    <vendor email="konovka.andrey@gmail.com" url="https://legionivo.github.io">Andrey Konovka</vendor>
+    <idea-version since-build="162"/>
+    <description><![CDATA[<html>
+        <h1>A plugin that exports test cases from Intellij Idea to TestRail using Allure @Step annotations.</h1>
+<li>Plugin was build to work only with the following libraries:</li>
+    <ul>
+        <li><a href="https://junit.org/junit5/" target="_blank">Junit 5</a></li>
+        <li><a href="https://docs.qameta.io/allure/" target="_blank">Allure</a></li>
+    </ul>
+<li>How to use:</li>
+    <ul>
+        <li>Set up valid credentials in plugin settings under Tools - TestRail exporter plugin</li>
+        <li>Check that connection is successful</li>
+        <li>Open file with tests</li>
+        <li>Select desired test by putting a cursor on a test name - IMPORTANT</li>
+        <li>Push Alt - Insert combination</li>
+        <li>Select "Export to TestRail" menu item</li>
+        <li>TmsLink with testCase ID should be added</li>
+    </ul>
+
+<br>Plugin does update existing test case in TestRail - no need to delete it manually and export again!</br>
+<br /><br />
+            <li>Code requirements:</li>
+            <ul>
+                <li>@DisplayName annotation is mandatory - test case title is created from it</li>
+                <li>@Feature annotation on a test or class level is mandatory - TestRail section is linked to it</li>
+                <li>@Link is not mandatory, but strongly advised</li>
+                <li>If you want to see nice test case - write nice @Step annotations</li>
+            </ul>
+        <h4>Have fun with it!</h4>
+        </html>]]>
+    </description>
+    <depends>com.intellij.properties</depends>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <projectConfigurable groupId="tools" displayName="Allure to TestRail exporter plugin"
+                             id="preferences.TestRailConfigurable" instance="io.github.legionivo.plugin.TestRailConfigurable"/>
+        <projectService serviceImplementation="io.github.legionivo.plugin.Settings"/>
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <action id="TestRail.Action" class="io.github.legionivo.plugin.TestRailAction" text="Export to TestRail">
+            <add-to-group group-id="GenerateGroup" anchor="first"/>
+        </action>
+    </actions>
+</idea-plugin>

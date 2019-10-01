@@ -1,0 +1,55 @@
+buildscript {
+    repositories {
+        mavenCentral()
+
+        maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
+    }
+}
+
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '0.4.10'
+}
+
+group 'com.zoomint'
+version '1.4'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
+    compile("com.squareup.okhttp3:logging-interceptor:3.12.0")
+    compile("com.squareup.retrofit2:retrofit:2.4.0")
+    compile("com.squareup.retrofit2:converter-gson:2.5.0")
+    compile("org.aspectj:aspectjrt:1.9.2")
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.11.1'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+}
+
+apply plugin: 'org.jetbrains.intellij'
+apply plugin: 'java'
+apply plugin: 'idea'
+
+intellij {
+    version = '2019.1'
+    plugins = ['properties']
+    pluginName 'Allure to TestRail exporter plugin'
+    updateSinceUntilBuild = false
+
+    patchPluginXml {
+        sinceBuild '162'
+    }
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+wrapper.gradleVersion = '5.6.2'

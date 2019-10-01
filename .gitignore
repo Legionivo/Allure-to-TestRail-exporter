@@ -1,0 +1,14 @@
+.allure
+.idea
+build/
+.gradle
+build
+!gradle-wrapper.jar
+*.iml
+out
+.DS_Store
+allure-results
+*.ipr
+*.iws
+custom_config.properties
+src/main/java/com/zoomint/core/utils/SetConfig.java
