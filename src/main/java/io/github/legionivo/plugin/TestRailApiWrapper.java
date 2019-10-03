@@ -245,10 +245,14 @@ class TestRailApiWrapper {
             PsiVariable variable = (PsiVariable) ((PsiReferenceExpressionImpl) expression).resolve();
             if (Objects.requireNonNull(variable).hasInitializer()) {
                 PsiExpression initializer = Objects.requireNonNull(variable).getInitializer();
-                text = Objects.requireNonNull(initializer).getText().replace("\"", "");
+                if (initializer == null) {
+                    text = Objects.requireNonNull(variable.getNameIdentifier()).getText();
+                } else text = Objects.requireNonNull(initializer).getText().replace("\"", "");
             } else text = expression.getText();
         } else if (expression instanceof PsiLiteralExpression) {
             text = expression.getText().replaceAll("^\"|\"$", "");
+        } else if (expression instanceof PsiPrefixExpression) {
+            text = expression.getText();
         } else if (expression instanceof PsiPolyadicExpression)
             text = getValueFromPsiPolyadicExpression((PsiPolyadicExpression) expression);
         return text;
