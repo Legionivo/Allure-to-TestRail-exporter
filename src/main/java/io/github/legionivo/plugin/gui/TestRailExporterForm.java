@@ -63,7 +63,6 @@ public class TestRailExporterForm {
         try {
             return Optional.of(client.getUserByEmail(settings.getUserName()).getName());
         } catch (Exception e) {
-            LOGGER.error(e);
             return Optional.empty();
         }
     }
