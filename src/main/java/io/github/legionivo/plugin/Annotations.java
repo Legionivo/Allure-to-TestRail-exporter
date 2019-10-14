@@ -9,6 +9,7 @@ public class Annotations {
     static final String ALLURE2_FEATURE_ANNOTATION = "io.qameta.allure.Feature";
     static final String ALLURE2_LINK_ANNOTATION = "io.qameta.allure.Link";
     static final String ALLURE2_TMS_LINK_ANNOTATION = "io.qameta.allure.TmsLink";
+    static final String ALLURE2_ISSUE_ANNOTATION = "io.qameta.allure.Issue";
     static final String OWNER_KEY_ANNOTATION = "org.aeonbits.owner.Config.Key";
 
     static final String JUNIT_TEST_ANNOTATION = "org.junit.jupiter.api.Test";

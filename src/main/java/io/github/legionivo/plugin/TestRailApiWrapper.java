@@ -310,6 +310,8 @@ class TestRailApiWrapper {
     private String getLinkRef(PsiMethod testMethod) {
         if (testMethod.hasAnnotation(Annotations.ALLURE2_LINK_ANNOTATION)) {
             return AnnotationUtil.getDeclaredStringAttributeValue(Objects.requireNonNull(testMethod.getAnnotation(Annotations.ALLURE2_LINK_ANNOTATION)), "name");
+        } else if (testMethod.hasAnnotation(Annotations.ALLURE2_ISSUE_ANNOTATION)) {
+            return AnnotationUtil.getDeclaredStringAttributeValue(Objects.requireNonNull(testMethod.getAnnotation(Annotations.ALLURE2_ISSUE_ANNOTATION)), "value");
         }
         return "";
     }
