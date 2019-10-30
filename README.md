@@ -34,6 +34,11 @@ Gradle 5(optional, wrapper is included in project)
     Select "Export to TestRail" menu item
 
     TmsLink with testCase ID should be added
+ 
+ 
+ 
+**If you do not need test steps - enable "Export only test name" checkbox in plugin configuration settings**
+
 
 
 ##### Code requirements:
