@@ -20,6 +20,15 @@ public class Settings implements PersistentStateComponent<Settings> {
     private String apiUrl;
     private int projectId;
     private int suiteId;
+    private boolean isExportOnlyTestNamesCheckBoxEnabled;
+
+    public boolean isExportOnlyTestNamesCheckBoxEnabled() {
+        return isExportOnlyTestNamesCheckBoxEnabled;
+    }
+
+    public void setExportOnlyTestNamesCheckBoxEnabled(boolean exportOnlyTestNamesCheckBoxEnabled) {
+        isExportOnlyTestNamesCheckBoxEnabled = exportOnlyTestNamesCheckBoxEnabled;
+    }
 
     public int getProjectId() {
         return projectId;

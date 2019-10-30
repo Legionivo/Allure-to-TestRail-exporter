@@ -9,6 +9,8 @@ import io.github.legionivo.plugin.api.TestRailClientBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -22,13 +24,21 @@ public class TestRailExporterForm {
     private JTextField statusField;
     private JButton testButton;
     private Settings settings;
-
-    private static final Logger LOGGER = new DefaultLogger(TestRailExporterForm.class.getName());
-
+    private JCheckBox exportOnlyTestNameCheckBox;
 
     public TestRailExporterForm() {
         testButton.addActionListener(e -> handleTestButton());
         statusField.setText("press 'Test' button");
+        exportOnlyTestNameCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (exportOnlyTestNameCheckBox.isSelected()){
+                    settings.setExportOnlyTestNamesCheckBoxEnabled(true);
+                } else if (!exportOnlyTestNameCheckBox.isSelected()) {
+                    settings.setExportOnlyTestNamesCheckBoxEnabled(false);
+                }
+            }
+        });
     }
 
     public void createUI(Project project) {
@@ -36,6 +46,7 @@ public class TestRailExporterForm {
         usernameTextField.setText(Objects.requireNonNull(settings).getUserName());
         passwordPasswordField.setText(settings.getPassword());
         url.setText(settings.getApiUrl());
+        exportOnlyTestNameCheckBox.setSelected(settings.isExportOnlyTestNamesCheckBoxEnabled());
     }
 
     private void handleTestButton() {
@@ -49,10 +60,6 @@ public class TestRailExporterForm {
 
     private boolean isEmpty(final JTextField field) {
         return StringUtils.isBlank(field.getText());
-    }
-
-    private boolean isEmpty(final JPasswordField field) {
-        return StringUtils.isBlank(String.copyValueOf(field.getPassword()));
     }
 
     private Optional<String> getTestRailUser() {
@@ -82,6 +89,7 @@ public class TestRailExporterForm {
         settings.setApiUrl(url.getText());
         settings.setProjectId(Integer.parseInt(projectIdTextFiled.getText()));
         settings.setSuiteId(Integer.parseInt(suiteIdTextField.getText()));
+        settings.setExportOnlyTestNamesCheckBoxEnabled(exportOnlyTestNameCheckBox.isSelected());
     }
 
     public void reset() {

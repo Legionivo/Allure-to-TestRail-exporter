@@ -12,6 +12,7 @@ import io.github.legionivo.plugin.enums.State;
 import io.github.legionivo.plugin.model.Section;
 import io.github.legionivo.plugin.model.TestCase;
 import io.github.legionivo.plugin.model.TestStep;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -100,8 +101,16 @@ class TestRailApiWrapper {
 
     private TestCase setTestCaseDetails(PsiMethod testMethod) {
         TestCase testCase = new TestCase();
-        testCase.setCustomSteps(toScenario(getSteps(testMethod)));
+        if (!settings.isExportOnlyTestNamesCheckBoxEnabled()) {
+            testCase.setCustomSteps(toScenario(getSteps(testMethod)));
+            return getTestCase(testMethod, testCase);
+        } else {
+            return getTestCase(testMethod, testCase);
+        }
+    }
 
+    @NotNull
+    private TestCase getTestCase(PsiMethod testMethod, TestCase testCase) {
         String title = AnnotationUtil.getStringAttributeValue(Objects.requireNonNull(
                 testMethod.getAnnotation(Annotations.JUNIT_DISPLAY_NAME_ANNOTATION)), "value");
         testCase.setTitle(title);
