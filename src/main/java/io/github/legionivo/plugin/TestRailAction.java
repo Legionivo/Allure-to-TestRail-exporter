@@ -28,13 +28,23 @@ public class TestRailAction extends AnAction {
             PsiMethod method = (PsiMethod) element;
             TestRailApiWrapper testRail = new TestRailApiWrapper(Objects.requireNonNull(Settings.getInstance(method.getProject())));
             PsiClass testClass = (PsiClass) method.getParent();
-            PsiAnnotation epicAnnotation = testClass.getAnnotation(Annotations.ALLURE2_FEATURE_ANNOTATION);
-            String epicName = AnnotationUtil.getDeclaredStringAttributeValue(Objects.requireNonNull(epicAnnotation), "value");
-
+            PsiAnnotation featureClassAnnotation = testClass.getAnnotation(Annotations.ALLURE2_FEATURE_ANNOTATION);
+            PsiAnnotation featureMethodAnnotation = method.getAnnotation(Annotations.ALLURE2_FEATURE_ANNOTATION);
+            String featureName;
+            if (featureClassAnnotation != null && featureMethodAnnotation != null) {
+                // if @Feature is present on a class and methods levels, method annotation is taken
+                featureName = AnnotationUtil.getDeclaredStringAttributeValue(Objects.requireNonNull(featureMethodAnnotation), "value");
+            } else if (featureClassAnnotation == null) {
+                // if @Feature is not present on a class level, method annotation is taken
+                featureName = AnnotationUtil.getDeclaredStringAttributeValue(Objects.requireNonNull(featureMethodAnnotation), "value");
+            } else {
+                // else take class level annotation
+                featureName = AnnotationUtil.getDeclaredStringAttributeValue(featureClassAnnotation, "value");
+            }
             if (method.hasAnnotation(Annotations.ALLURE2_TMS_LINK_ANNOTATION)) {
                 testRail.updateTestCase(method);
             } else {
-                int sectionId = testRail.createSections(epicName);
+                int sectionId = testRail.createSections(featureName);
                 TestCase testCase = testRail.createTestCase(sectionId, method);
                 createCaseIdAnnotation(testCase, method);
             }

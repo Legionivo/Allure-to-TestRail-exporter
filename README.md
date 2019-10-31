@@ -43,6 +43,9 @@ Gradle 5(optional, wrapper is included in project)
 
 ##### Code requirements:
     @DisplayName annotation is mandatory - test case title is created from it
-    @Feature annotation on a test or class level is mandatory - TestRail section is linked to it
+    @Feature annotation on a test or class level is mandatory - TestRail section is linked to it:
+     - If @Feature is present on a class and methods levels, method annotation is taken
+     - If @Feature is not present on a class level, method annotation is taken
+     - If conditions above are false - class annotation is taken 
     @Link is not mandatory, but strongly advised
     If you want to see nice test case - write nice @Step annotations   
