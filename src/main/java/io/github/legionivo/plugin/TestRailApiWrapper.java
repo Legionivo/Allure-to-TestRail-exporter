@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.java.PsiMethodCallExpressionImpl;
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
+import com.intellij.psi.impl.source.tree.java.PsiReturnStatementImpl;
 import io.github.legionivo.plugin.api.TestRailClient;
 import io.github.legionivo.plugin.api.TestRailClientBuilder;
 import io.github.legionivo.plugin.enums.State;
@@ -243,13 +244,29 @@ class TestRailApiWrapper {
         if (expression instanceof PsiMethodCallExpression) {
             PsiMethod method = ((PsiMethodCallExpressionImpl) expression).resolveMethod();
             if (Objects.requireNonNull(method).hasAnnotation(Annotations.OWNER_KEY_ANNOTATION) || method.getAnnotations().length > 0) {
-                PsiModifierList modifierList = method.getModifierList();
-                Project project = expression.getProject();
-                PsiAnnotation[] list = modifierList.getAnnotations();
-                PsiLiteralExpression expression1 = (PsiLiteralExpression) list[0].findAttributeValue("value");
-                String parameterValue = Objects.requireNonNull(expression1).getText().replace("\"", "");
-                text = PropertiesImplUtil.findPropertiesByKey(project, parameterValue).get(0).getValue();
+                text = getValueFromAnnotatedMethod(expression, method);
+            } else if (method.getBody() != null) {
+                PsiStatement[] statements = method.getBody().getStatements();
+                if (((PsiReturnStatementImpl) statements[0]).getReturnValue() instanceof PsiReferenceExpression) {
+                    PsiExpression psiReferenceExpression = (((PsiReturnStatementImpl) statements[0]).getReturnValue());
+                    assert psiReferenceExpression != null;
+                    PsiVariable variable = (PsiVariable) ((PsiReferenceExpressionImpl) psiReferenceExpression).resolve();
+                    if ((((PsiReturnStatementImpl) statements[0]).getReturnValue() instanceof PsiLiteralExpression)) {
+                        text = ((Objects.requireNonNull(((PsiReturnStatementImpl) statements[0]).getReturnValue()).getText())).replaceAll("^\"|\"$", "");
+                    } else if (Objects.requireNonNull(variable).hasInitializer()) {
+                        PsiExpression initializer = Objects.requireNonNull(variable).getInitializer();
+                        if (initializer == null) {
+                            text = Objects.requireNonNull(variable.getNameIdentifier()).getText();
+                        } else if (initializer instanceof PsiMethodCallExpressionImpl) {
+                            PsiMethod psiMethod = ((PsiMethodCallExpressionImpl) initializer).resolveMethod();
+                            if (Objects.requireNonNull(psiMethod).hasAnnotation(Annotations.OWNER_KEY_ANNOTATION) || psiMethod.getAnnotations().length > 0) {
+                                text = getValueFromAnnotatedMethod(initializer, psiMethod);
+                            }
+                        } else text = Objects.requireNonNull(initializer).getText().replace("\"", "");
+                    } else text = expression.getText();
+                }
             } else text = expression.getText();
+
         } else if (expression instanceof PsiReferenceExpression) {
             PsiVariable variable = (PsiVariable) ((PsiReferenceExpressionImpl) expression).resolve();
             if (Objects.requireNonNull(variable).hasInitializer()) {
@@ -266,6 +283,18 @@ class TestRailApiWrapper {
             text = getValueFromPsiPolyadicExpression((PsiPolyadicExpression) expression);
         return text;
 
+    }
+
+
+    private static String getValueFromAnnotatedMethod(PsiExpression expression, PsiMethod method) {
+        String text;
+        PsiModifierList modifierList = method.getModifierList();
+        Project project = expression.getProject();
+        PsiAnnotation[] list = modifierList.getAnnotations();
+        PsiLiteralExpression expression1 = (PsiLiteralExpression) list[0].findAttributeValue("value");
+        String parameterValue = Objects.requireNonNull(expression1).getText().replace("\"", "");
+        text = PropertiesImplUtil.findPropertiesByKey(project, parameterValue).get(0).getValue();
+        return text;
     }
 
     private static String getValueFromPsiPolyadicExpression(PsiPolyadicExpression polyadicExpression) {
