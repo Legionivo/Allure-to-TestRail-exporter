@@ -48,4 +48,6 @@ Gradle 5(optional, wrapper is included in project)
      - If @Feature is not present on a class level, method annotation is taken
      - If conditions above are false - class annotation is taken 
     @Link is not mandatory, but strongly advised
-    If you want to see nice test case - write nice @Step annotations   
+    If you want to see nice test case - write nice @Step annotations  
+    
+    ![Plugin demo](plugin.gif) 
