@@ -51,4 +51,4 @@ Gradle 5(optional, wrapper is included in project)
     If you want to see nice test case - write nice @Step annotations  
     
 ##### Demo    
-    ![Plugin demo](plugin.gif) 
+    ![](https://github.com/Legionivo/Allure-to-TestRail-exporter/raw/master/plugin.gif) 
