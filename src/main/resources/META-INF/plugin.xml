@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>test-rail-plugin</id>
-    <name>Allure to Test Rail exporter</name>
+    <name>Allure to TestRail exporter</name>
     <vendor email="konovka.andrey@gmail.com" url="https://legionivo.github.io">Andrey Konovka</vendor>
     <idea-version since-build="162"/>
     <description><![CDATA[<html>
