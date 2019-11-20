@@ -8,11 +8,11 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'org.jetbrains.intellij' version '0.4.10'
+    id 'org.jetbrains.intellij' version '0.4.13'
 }
 
 group 'com.zoomint'
-version '1.4.7'
+version '1.5.0'
 sourceCompatibility = 1.8
 
 repositories {
@@ -36,8 +36,8 @@ apply plugin: 'java'
 apply plugin: 'idea'
 
 intellij {
-    version = '2019.1'
-    plugins = ['properties']
+    version = '2019.2'
+    plugins = ['properties', 'java']
     pluginName 'Allure to TestRail exporter plugin'
     updateSinceUntilBuild = false
 
@@ -52,4 +52,4 @@ idea {
         downloadSources = true
     }
 }
-wrapper.gradleVersion = '5.6.2'
+wrapper.gradleVersion = '6.0.1'

@@ -34,6 +34,7 @@
         </html>]]>
     </description>
     <depends>com.intellij.properties</depends>
+    <depends>com.intellij.modules.java</depends>
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <projectConfigurable groupId="tools" displayName="Allure to TestRail exporter plugin"

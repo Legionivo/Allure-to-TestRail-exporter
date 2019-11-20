@@ -29,10 +29,11 @@ public class TestRailExporterForm {
     public TestRailExporterForm() {
         testButton.addActionListener(e -> handleTestButton());
         statusField.setText("press 'Test' button");
+        exportOnlyTestNameCheckBox.setToolTipText("Create empty test case without steps");
         exportOnlyTestNameCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if (exportOnlyTestNameCheckBox.isSelected()){
+                if (exportOnlyTestNameCheckBox.isSelected()) {
                     settings.setExportOnlyTestNamesCheckBoxEnabled(true);
                 } else if (!exportOnlyTestNameCheckBox.isSelected()) {
                     settings.setExportOnlyTestNamesCheckBoxEnabled(false);
@@ -102,9 +103,13 @@ public class TestRailExporterForm {
 
     public boolean isModified() {
         boolean modified = false;
+        Integer projectId = Integer.parseInt(projectIdTextFiled.getText());
+        Integer suiteId = Integer.parseInt(suiteIdTextField.getText());
         modified = !usernameTextField.getText().equals(settings.getUserName());
         modified |= !passwordPasswordField.getText().equals(settings.getPassword());
         modified |= !url.getText().equals(settings.getApiUrl());
+        modified |= !projectId.equals(settings.getProjectId());
+        modified |= !suiteId.equals(settings.getSuiteId());
         return modified;
     }
 }

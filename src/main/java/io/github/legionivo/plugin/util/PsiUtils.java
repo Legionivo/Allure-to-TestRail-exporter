@@ -15,7 +15,7 @@ public class PsiUtils {
     }
 
     public static PsiAnnotation createAnnotation(final String annotation, final PsiElement context) {
-        final PsiElementFactory factory = PsiElementFactory.SERVICE.getInstance(context.getProject());
+        final PsiElementFactory factory = PsiElementFactory.getInstance(context.getProject());
         return factory.createAnnotationFromText(annotation, context);
     }
 
