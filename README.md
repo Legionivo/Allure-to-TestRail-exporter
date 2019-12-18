@@ -1,5 +1,5 @@
 ## A plugin that exports test cases from Intellij Idea to TestRail using Allure @Step annotations.</h1>
-
+Plugin is published here - https://plugins.jetbrains.com/plugin/13322-allure-to-test-rail-exporter/
 ## Requirements:
 JDK 8+
 
