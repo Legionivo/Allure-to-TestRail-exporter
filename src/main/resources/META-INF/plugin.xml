@@ -2,7 +2,8 @@
     <id>test-rail-plugin</id>
     <name>Allure to TestRail exporter</name>
     <vendor email="konovka.andrey@gmail.com" url="https://legionivo.github.io">Andrey Konovka</vendor>
-    <idea-version since-build="162"/>
+    <idea-version since-build="192"/>
+    <change-notes>Supported versions limited to IntelliJ Idea 2019.2</change-notes>
     <description><![CDATA[<html>
         <h1>A plugin that exports test cases from Intellij Idea to TestRail using Allure @Step annotations.</h1>
 <li>Plugin was build to work only with the following libraries:</li>

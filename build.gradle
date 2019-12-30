@@ -42,7 +42,7 @@ intellij {
     updateSinceUntilBuild = false
 
     patchPluginXml {
-        sinceBuild '162'
+        sinceBuild '192'
     }
 }
 
