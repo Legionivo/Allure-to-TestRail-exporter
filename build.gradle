@@ -11,9 +11,9 @@ plugins {
     id 'org.jetbrains.intellij' version '0.4.13'
 }
 
-group 'com.zoomint'
-version '1.5.1'
-sourceCompatibility = 1.8
+group 'io.github'
+version '1.5.2'
+sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()

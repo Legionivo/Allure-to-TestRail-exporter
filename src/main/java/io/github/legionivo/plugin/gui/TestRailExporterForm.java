@@ -1,7 +1,5 @@
 package io.github.legionivo.plugin.gui;
 
-import com.intellij.openapi.diagnostic.DefaultLogger;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import io.github.legionivo.plugin.Settings;
 import io.github.legionivo.plugin.api.TestRailClient;

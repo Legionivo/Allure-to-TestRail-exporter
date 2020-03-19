@@ -1,10 +1,13 @@
 package io.github.legionivo.plugin.api;
 
+import io.github.legionivo.plugin.model.Project;
 import io.github.legionivo.plugin.model.Section;
 import io.github.legionivo.plugin.model.TestCase;
-import io.github.legionivo.plugin.model.Project;
 import io.github.legionivo.plugin.model.User;
-import retrofit2.http.*;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 import java.util.List;
 

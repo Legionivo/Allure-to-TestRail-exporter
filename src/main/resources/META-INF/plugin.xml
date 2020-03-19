@@ -3,7 +3,10 @@
     <name>Allure to TestRail exporter</name>
     <vendor email="konovka.andrey@gmail.com" url="https://legionivo.github.io">Andrey Konovka</vendor>
     <idea-version since-build="192"/>
-    <change-notes>Supported versions limited to IntelliJ Idea 2019.2</change-notes>
+    <change-notes>
+        Custom SSL certificates support added
+        Gradle wrapper version updated
+    </change-notes>
     <description><![CDATA[<html>
         <h1>A plugin that exports test cases from Intellij Idea to TestRail using Allure @Step annotations.</h1>
 <li>Plugin was build to work only with the following libraries:</li>
@@ -38,7 +41,7 @@
     <depends>com.intellij.modules.java</depends>
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <projectConfigurable groupId="tools" displayName="Allure to TestRail exporter plugin"
+        <projectConfigurable groupId="tools" displayName="Allure to TestRail Exporter Plugin"
                              id="preferences.TestRailConfigurable" instance="io.github.legionivo.plugin.TestRailConfigurable"/>
         <projectService serviceImplementation="io.github.legionivo.plugin.Settings"/>
     </extensions>

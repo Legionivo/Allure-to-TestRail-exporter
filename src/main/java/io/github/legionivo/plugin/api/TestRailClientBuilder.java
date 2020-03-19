@@ -18,7 +18,9 @@ public class TestRailClientBuilder {
     }
 
     public TestRailClient build() {
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        OkHttpClient.Builder httpClient = UnsafeOkHttpClient.getUnsafeOkHttpClient().newBuilder();
+
+//        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(new HttpLoggingInterceptor());
         httpClient.addInterceptor(new BasicAuthInterceptor(user, password));
 
