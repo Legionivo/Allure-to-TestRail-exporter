@@ -5,8 +5,8 @@
     <idea-version since-build="192"/>
     <change-notes><![CDATA[<html>
     <ul>
-    <li>Custom SSL certificates support added</li>
-    <li>Gradle wrapper version updated</li>
+    <li>Bugs fixed</li>
+
     </ul>
                 </html>]]>
     </change-notes>

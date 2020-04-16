@@ -243,7 +243,7 @@ class TestRailApiWrapper {
         String text = null;
         if (expression instanceof PsiMethodCallExpression) {
             PsiMethod method = ((PsiMethodCallExpressionImpl) expression).resolveMethod();
-            if (Objects.requireNonNull(method).hasAnnotation(Annotations.OWNER_KEY_ANNOTATION) || method.getAnnotations().length > 0) {
+            if (Objects.requireNonNull(method).hasAnnotation(Annotations.OWNER_KEY_ANNOTATION) || method.getAnnotations().length > 0 && !method.hasAnnotation(Annotations.ALLURE2_STEP_ANNOTATION)) {
                 text = getValueFromAnnotatedMethod(expression, method);
             } else if (method.getBody() != null) {
                 PsiStatement[] statements = method.getBody().getStatements();
