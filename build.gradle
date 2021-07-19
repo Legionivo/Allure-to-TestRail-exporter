@@ -12,7 +12,7 @@ plugins {
 }
 
 group 'io.github'
-version '1.5.3'
+version '1.5.4'
 sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {

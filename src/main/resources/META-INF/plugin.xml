@@ -5,7 +5,7 @@
     <idea-version since-build="192"/>
     <change-notes><![CDATA[<html>
     <ul>
-    <li>Bugs fixed</li>
+    <li>Removed manual setup of test case type ID = 1, because some instances do not have such ID</li>
 
     </ul>
                 </html>]]>

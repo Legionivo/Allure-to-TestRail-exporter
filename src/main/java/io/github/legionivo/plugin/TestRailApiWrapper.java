@@ -117,7 +117,7 @@ class TestRailApiWrapper {
         testCase.setTitle(title);
         testCase.setCustomState(State.AUTOMATED.getValue());
         testCase.setRefs(getLinkRef(testMethod));
-        testCase.setTypeId(1);
+//        testCase.setTypeId(1); // removed because some instances of TestRail have different ID's.
         return testCase;
     }
 
