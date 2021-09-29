@@ -32,10 +32,10 @@ public class TestCase {
     private Integer priorityId;
     @SerializedName("milestone_id")
     @Expose
-    private Object milestoneId;
+    private Integer milestoneId;
     @SerializedName("refs")
     @Expose
-    private Object refs;
+    private String refs;
     @SerializedName("created_by")
     @Expose
     private Integer createdBy;
@@ -47,7 +47,7 @@ public class TestCase {
     private Integer updatedBy;
     @SerializedName("updated_on")
     @Expose
-    private Integer updatedOn;
+    private Object updatedOn;
     @SerializedName("estimate")
     @Expose
     private Object estimate;

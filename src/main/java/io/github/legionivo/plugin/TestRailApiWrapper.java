@@ -13,6 +13,8 @@ import io.github.legionivo.plugin.enums.State;
 import io.github.legionivo.plugin.model.Section;
 import io.github.legionivo.plugin.model.TestCase;
 import io.github.legionivo.plugin.model.TestStep;
+import io.github.legionivo.plugin.util.MethodNameWithExceptionHolder;
+import io.github.legionivo.plugin.util.NotificationUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
 class TestRailApiWrapper {
 
     private final Settings settings;
-    private TestRailClient testRailClient;
+    private final TestRailClient testRailClient;
 
     TestRailApiWrapper(Settings settings) {
         this.settings = settings;
@@ -77,7 +79,7 @@ class TestRailApiWrapper {
     }
 
     private Section getSection(int projectId, int suiteId, String name) {
-        return testRailClient.getSections(projectId, suiteId)
+        return testRailClient.getSections(projectId, suiteId).getSections()
                 .stream()
                 .filter(it -> it.getName().equalsIgnoreCase(name))
                 .findFirst()
@@ -88,32 +90,52 @@ class TestRailApiWrapper {
         return testRailClient.addSection(projectId, section);
     }
 
-    TestCase createTestCase(int sectionId, PsiMethod testMethod) {
-        TestCase testCase = setTestCaseDetails(testMethod);
+    TestCase createTestCase(int sectionId, PsiMethod testMethod, Boolean isSimplified) throws Exception {
+        TestCase testCase;
+        if (isSimplified) {
+            testCase = setTestCaseDetailsWithoutSteps(testMethod);
+        }
+        else {
+            testCase = setTestCaseDetails(testMethod);
+        }
         return saveTestCase(sectionId, testCase);
     }
 
-    void updateTestCase(PsiMethod testMethod) {
+    void updateTestCase(PsiMethod testMethod) throws Exception {
         TestCase testCase = setTestCaseDetails(testMethod);
         int id = Integer.parseInt(Objects.requireNonNull(AnnotationUtil.getStringAttributeValue(
                 Objects.requireNonNull(testMethod.getAnnotation(Annotations.ALLURE2_TMS_LINK_ANNOTATION)), "value")));
         updateTestCase(id, testCase);
     }
 
-    private TestCase setTestCaseDetails(PsiMethod testMethod) {
+    void updateTestCaseSimplified(PsiMethod testMethod) {
+        TestCase testCase = setTestCaseDetailsWithoutSteps(testMethod);
+        int id = Integer.parseInt(Objects.requireNonNull(AnnotationUtil.getStringAttributeValue(
+                Objects.requireNonNull(testMethod.getAnnotation(Annotations.ALLURE2_TMS_LINK_ANNOTATION)), "value")));
+        updateTestCase(id, testCase);
+    }
+
+    private TestCase setTestCaseDetails(PsiMethod testMethod) throws Exception {
         TestCase testCase = new TestCase();
-        if (!settings.isExportOnlyTestNamesCheckBoxEnabled()) {
-            testCase.setCustomSteps(toScenario(getSteps(testMethod)));
-            return getTestCase(testMethod, testCase);
-        } else {
-            return getTestCase(testMethod, testCase);
-        }
+        String scenario = toScenario(getSteps(testMethod));
+        testCase.setCustomSteps(scenario);
+        return getTestCase(testMethod, testCase);
+    }
+
+    private TestCase setTestCaseDetailsWithoutSteps(PsiMethod testMethod) {
+        TestCase testCase = new TestCase();
+        return getTestCase(testMethod, testCase);
     }
 
     @NotNull
     private TestCase getTestCase(PsiMethod testMethod, TestCase testCase) {
-        String title = AnnotationUtil.getStringAttributeValue(Objects.requireNonNull(
-                testMethod.getAnnotation(Annotations.JUNIT_DISPLAY_NAME_ANNOTATION)), "value");
+        String title = null;
+        try {
+            title = AnnotationUtil.getStringAttributeValue(Objects.requireNonNull(
+                    testMethod.getAnnotation(Annotations.JUNIT_DISPLAY_NAME_ANNOTATION)), "value");
+        } catch (Exception e) {
+            NotificationUtils.showDisplayNameNotFoundNotification();
+        }
         testCase.setTitle(title);
         testCase.setCustomState(State.AUTOMATED.getValue());
         testCase.setRefs(getLinkRef(testMethod));
@@ -131,7 +153,7 @@ class TestRailApiWrapper {
                 .collect(Collectors.joining("\r\n"));
     }
 
-    private static List<TestStep> getSteps(final PsiMethod method) {
+    private static List<TestStep> getSteps(final PsiMethod method) throws Exception {
         List<TestStep> list = new ArrayList<>();
         PsiClass testClass = (PsiClass) method.getParent();
         PsiMethod[] classMethods = testClass.getMethods();
@@ -172,7 +194,7 @@ class TestRailApiWrapper {
         return list;
     }
 
-    private static String extractStringFromVarArgs(PsiExpression[] expressions) {
+    private static String extractStringFromVarArgs(PsiExpression[] expressions) throws Exception {
         StringJoiner joiner = new StringJoiner(", ");
 
         for (PsiExpression psiExpression : expressions) {
@@ -181,7 +203,7 @@ class TestRailApiWrapper {
         return joiner.toString();
     }
 
-    private static TestStep getStepsFromMethod(PsiMethodCallExpression methodCallExpression) {
+    private static TestStep getStepsFromMethod(PsiMethodCallExpression methodCallExpression) throws Exception {
         Map<String, String> expressionsMap = new HashMap<>();
         TestStep step = null;
         PsiExpression[] expressions = methodCallExpression.getArgumentList().getExpressions();
@@ -217,7 +239,7 @@ class TestRailApiWrapper {
 
     private static String processNameTemplate(final String template, final Map<String, String> params) {
         final Matcher matcher = Pattern.compile("\\{([^}]*)}").matcher(template);
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         while (matcher.find()) {
             final String pattern = matcher.group(1);
             final String replacement = processPattern(pattern, params).orElseGet(matcher::group);
@@ -239,20 +261,23 @@ class TestRailApiWrapper {
         return Optional.of(params.get(parameterName));
     }
 
-    private static String getValueFromExpression(PsiExpression expression) {
+    private static String getValueFromExpression(PsiExpression expression) throws Exception {
         String text = null;
         if (expression instanceof PsiMethodCallExpression) {
+            MethodNameWithExceptionHolder.methodName = ((PsiMethodCallExpressionImpl) expression).getMethodExpression().getCanonicalText();
             PsiMethod method = ((PsiMethodCallExpressionImpl) expression).resolveMethod();
             if (Objects.requireNonNull(method).hasAnnotation(Annotations.OWNER_KEY_ANNOTATION) || method.getAnnotations().length > 0 && !method.hasAnnotation(Annotations.ALLURE2_STEP_ANNOTATION)) {
                 text = getValueFromAnnotatedMethod(expression, method);
             } else if (method.getBody() != null) {
-                PsiStatement[] statements = method.getBody().getStatements();
-                if (((PsiReturnStatementImpl) statements[0]).getReturnValue() instanceof PsiReferenceExpression) {
-                    PsiExpression psiReferenceExpression = (((PsiReturnStatementImpl) statements[0]).getReturnValue());
+                List<PsiStatement> statements = Arrays.stream(method.getBody().getStatements())
+                        .filter(sc -> sc instanceof PsiReturnStatement)
+                        .collect(Collectors.toList());
+                if (((PsiReturnStatementImpl) statements.get(0)).getReturnValue() instanceof PsiReferenceExpression) {
+                    PsiExpression psiReferenceExpression = (((PsiReturnStatementImpl) statements.get(0)).getReturnValue());
                     assert psiReferenceExpression != null;
                     PsiVariable variable = (PsiVariable) ((PsiReferenceExpressionImpl) psiReferenceExpression).resolve();
-                    if ((((PsiReturnStatementImpl) statements[0]).getReturnValue() instanceof PsiLiteralExpression)) {
-                        text = ((Objects.requireNonNull(((PsiReturnStatementImpl) statements[0]).getReturnValue()).getText())).replaceAll("^\"|\"$", "");
+                    if ((((PsiReturnStatementImpl) statements.get(0)).getReturnValue() instanceof PsiLiteralExpression)) {
+                        text = ((Objects.requireNonNull(((PsiReturnStatementImpl) statements.get(0)).getReturnValue()).getText())).replaceAll("^\"|\"$", "");
                     } else if (Objects.requireNonNull(variable).hasInitializer()) {
                         PsiExpression initializer = Objects.requireNonNull(variable).getInitializer();
                         if (initializer == null) {
@@ -282,7 +307,6 @@ class TestRailApiWrapper {
         } else if (expression instanceof PsiPolyadicExpression)
             text = getValueFromPsiPolyadicExpression((PsiPolyadicExpression) expression);
         return text;
-
     }
 
 
@@ -333,11 +357,10 @@ class TestRailApiWrapper {
     }
 
     private TestCase saveTestCase(int sectionId, TestCase testCase) {
-        TestCase tCase = getTestCase(sectionId, testCase.getTitle());
+        TestCase tCase = getTestCase(testCase.getTitle());
         if (tCase != null) {
             return tCase;
         }
-
         return testRailClient.addTestCase(sectionId, testCase);
     }
 
@@ -357,12 +380,13 @@ class TestRailApiWrapper {
         return "";
     }
 
-    private List<TestCase> getTestCases(int sectionId) {
-        return testRailClient.getTestCases(settings.getProjectId(), settings.getSuiteId(), sectionId);
+    private List<TestCase> getTestCases() {
+        return testRailClient.getTestCases(settings.getProjectId(), settings.getSuiteId()).getCases();
+
     }
 
-    private TestCase getTestCase(int sectionId, String testCaseTitle) {
-        return getTestCases(sectionId).stream()
+    private TestCase getTestCase(String testCaseTitle) {
+        return getTestCases().stream()
                 .filter(it -> it.getTitle()
                         .equals(testCaseTitle))
                 .findFirst()

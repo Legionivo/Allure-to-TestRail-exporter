@@ -22,4 +22,11 @@ public class User {
     @SerializedName("name")
     @Expose
     private String name;
+
+    @SerializedName("role_id")
+    @Expose
+    private Integer roleId;
+    @SerializedName("role")
+    @Expose
+    private Integer role;
 }

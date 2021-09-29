@@ -13,13 +13,10 @@ import io.github.legionivo.plugin.util.AnnotationUtils;
 import io.github.legionivo.plugin.util.CaseAnnotationUtils;
 import io.github.legionivo.plugin.util.MethodNameWithExceptionHolder;
 import io.github.legionivo.plugin.util.NotificationUtils;
-import lombok.SneakyThrows;
 
 import java.util.Objects;
 
-public class TestRailAction extends AnAction {
-
-    @SneakyThrows
+public class TestRailActionSimplified extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         final PsiElement element = e.getData(PlatformDataKeys.PSI_ELEMENT);
@@ -40,7 +37,7 @@ public class TestRailAction extends AnAction {
             }
 
             if (method.hasAnnotation(Annotations.ALLURE2_TMS_LINK_ANNOTATION)) {
-                testRail.updateTestCase(method);
+                testRail.updateTestCaseSimplified(method);
                 caseId =
                         AnnotationUtil.getDeclaredStringAttributeValue(
                                 Objects.requireNonNull(method.getAnnotation(Annotations.ALLURE2_TMS_LINK_ANNOTATION)), "value");
@@ -49,7 +46,7 @@ public class TestRailAction extends AnAction {
                 int sectionId = testRail.createSections(featureName);
                 TestCase testCase = null;
                 try {
-                    testCase = testRail.createTestCase(sectionId, method,false);
+                    testCase = testRail.createTestCase(sectionId, method, true);
                     caseId = String.valueOf(testCase.getId());
                     CaseAnnotationUtils.createCaseIdAnnotation(testCase, method);
                     NotificationUtils.showSuccessfulNotification(method, caseId);
@@ -57,8 +54,9 @@ public class TestRailAction extends AnAction {
                     NotificationUtils.showMethodErrorNotification(MethodNameWithExceptionHolder.methodName);
                     ex.printStackTrace();
                 }
-
             }
         }
     }
 }
+
+

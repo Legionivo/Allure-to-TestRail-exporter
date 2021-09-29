@@ -10,10 +10,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CustomStepsSeparated {
+    @SerializedName("additional_info")
+    @Expose
+    private String additionalInfo;
     @SerializedName("content")
     @Expose
     private String content;
     @SerializedName("expected")
     @Expose
     private String expected;
+    @SerializedName("refs")
+    @Expose
+    private String refs;
 }

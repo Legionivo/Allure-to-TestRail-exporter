@@ -10,10 +10,6 @@ import java.util.Optional;
 
 public class PsiUtils {
 
-    public static String getAnnotationAttribute(PsiAnnotation annotation, String value) {
-        return Objects.requireNonNull(annotation.findDeclaredAttributeValue(value)).getText();
-    }
-
     public static PsiAnnotation createAnnotation(final String annotation, final PsiElement context) {
         final PsiElementFactory factory = PsiElementFactory.getInstance(context.getProject());
         return factory.createAnnotationFromText(annotation, context);

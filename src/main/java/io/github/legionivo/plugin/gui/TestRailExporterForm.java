@@ -22,22 +22,10 @@ public class TestRailExporterForm {
     private JTextField statusField;
     private JButton testButton;
     private Settings settings;
-    private JCheckBox exportOnlyTestNameCheckBox;
 
     public TestRailExporterForm() {
         testButton.addActionListener(e -> handleTestButton());
         statusField.setText("press 'Test' button");
-        exportOnlyTestNameCheckBox.setToolTipText("Create empty test case without steps");
-        exportOnlyTestNameCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (exportOnlyTestNameCheckBox.isSelected()) {
-                    settings.setExportOnlyTestNamesCheckBoxEnabled(true);
-                } else if (!exportOnlyTestNameCheckBox.isSelected()) {
-                    settings.setExportOnlyTestNamesCheckBoxEnabled(false);
-                }
-            }
-        });
     }
 
     public void createUI(Project project) {
@@ -45,7 +33,6 @@ public class TestRailExporterForm {
         usernameTextField.setText(Objects.requireNonNull(settings).getUserName());
         passwordPasswordField.setText(settings.getPassword());
         url.setText(settings.getApiUrl());
-        exportOnlyTestNameCheckBox.setSelected(settings.isExportOnlyTestNamesCheckBoxEnabled());
     }
 
     private void handleTestButton() {
@@ -88,7 +75,6 @@ public class TestRailExporterForm {
         settings.setApiUrl(url.getText());
         settings.setProjectId(Integer.parseInt(projectIdTextFiled.getText()));
         settings.setSuiteId(Integer.parseInt(suiteIdTextField.getText()));
-        settings.setExportOnlyTestNamesCheckBoxEnabled(exportOnlyTestNameCheckBox.isSelected());
     }
 
     public void reset() {

@@ -28,7 +28,7 @@ public class Section {
     @SerializedName("depth")
     @Expose
     private int depth;
-    @SerializedName("display_oder")
+    @SerializedName("display_order")
     @Expose
     private int displayOrder;
 
