@@ -28,5 +28,5 @@ public class User {
     private Integer roleId;
     @SerializedName("role")
     @Expose
-    private Integer role;
+    private String role;
 }
