@@ -36,28 +36,22 @@ public class TestRailExporterForm {
     }
 
     private void handleTestButton() {
-        Optional<String> username = getTestRailUser();
-        if (username.isPresent()) {
-            statusField.setText(String.format("authorized as '%s'", username.get()));
-        } else {
-            statusField.setText("Bad credentials");
+        if (isEmpty(url) && isEmpty(usernameTextField) && isEmpty(passwordPasswordField)) {
+            statusField.setText("Please fill all required fields");
         }
+
+        final TestRailClient client = getTestRailClient();
+        String connectionTest;
+        try {
+            connectionTest = client.getUserByEmail(settings.getUserName()).getName();
+        } catch (Exception e) {
+           connectionTest = e.getMessage();
+        }
+        statusField.setText(connectionTest);
     }
 
     private boolean isEmpty(final JTextField field) {
         return StringUtils.isBlank(field.getText());
-    }
-
-    private Optional<String> getTestRailUser() {
-        if (isEmpty(url) && isEmpty(usernameTextField) && isEmpty(passwordPasswordField)) {
-            return Optional.empty();
-        }
-        final TestRailClient client = getTestRailClient();
-        try {
-            return Optional.of(client.getUserByEmail(settings.getUserName()).getName());
-        } catch (Exception e) {
-            return Optional.empty();
-        }
     }
 
     private TestRailClient getTestRailClient() {
